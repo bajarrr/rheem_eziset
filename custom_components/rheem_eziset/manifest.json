@@ -1,0 +1,11 @@
+{
+  "codeowners": ["@bajarrr"],
+  "config_flow": false,
+  "dependencies": [],
+  "documentation": "https://github.com/bajarrr/rheem_eziset",
+  "domain": "rheem_eziset",
+  "iot_class": "local_polling",
+  "name": "Rheem Eziset",
+  "requirements": [],
+  "version": "0.1"
+}
