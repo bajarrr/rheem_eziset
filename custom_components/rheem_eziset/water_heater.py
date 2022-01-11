@@ -1,6 +1,7 @@
 """Platform for sensor integration."""
 from __future__ import annotations
-import requests, time
+import requests
+import time
 
 
 from homeassistant.components.water_heater import (
