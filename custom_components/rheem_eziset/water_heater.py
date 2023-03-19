@@ -1,5 +1,6 @@
 """Platform for sensor integration."""
 from __future__ import annotations
+from typing import Any, Dict
 import requests
 import time
 
@@ -23,6 +24,10 @@ from datetime import timedelta
 import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 
+from .const import (
+    ATTR_MODE,
+    ATTR_FLOW,
+)
 from . import DOMAIN
 
 SCAN_INTERVAL = timedelta(seconds=10)
@@ -59,8 +64,9 @@ class RheemWaterHeater(WaterHeaterEntity):
         self._temperature_unit = TEMP_CELSIUS
         self._target_temp = None
         self._current_temp = None
+        self.attrs: Dict[str, Any] = {}
         self._state = STATE_GAS
-        self._state_attrs = {}
+
 
     @property
     def name(self) -> str:
@@ -112,12 +118,19 @@ class RheemWaterHeater(WaterHeaterEntity):
         """Return the unit of measurement."""
         return TEMP_CELSIUS
 
+    @property
+    def extra_state_attributes(self) -> Dict[str, Any]:
+        return self.attrs
+
     def update(self) -> None:
         """Fetch new state data for the sensor.
         This is the only method that should fetch new data for Home Assistant.
         """
         url = "http://" + self.hass.data[DOMAIN]["host"] + "/getInfo.cgi"
-        temp = requests.get(url=url).json()["temp"]
+        response = requests.get(url=url).json()
+        temp = response["temp"]
+        self.attrs[ATTR_MODE] = response["mode"]
+        self.attrs[ATTR_FLOW] = response["flow"]
         self._target_temp = temp
         self._current_temp = temp
 
